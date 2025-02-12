@@ -326,7 +326,10 @@ pub fn extract_functions(html: &scraper::Html) -> BTreeMap<String, Function> {
                 .peekable();
 
             while let Some(signatures) = children.next() {
-                assert_eq!(signatures.value().name(), "pre");
+                if signatures.value().name() != "pre" {
+                    // just a text section, like #atomic-rmw
+                    continue;
+                }
 
                 let mut description = String::new();
                 while let Some(x) = children.peek() {
