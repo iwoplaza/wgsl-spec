@@ -8,7 +8,7 @@ function list {
 }
 
 function update-upstream {
-    curl https://www.w3.org/TR/WGSL/ > spec/WGSL.html
+    curl https://www.w3.org/TR/WGSL/ > upstream/WGSL.html
 }
 
 function build {
