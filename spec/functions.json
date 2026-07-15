@@ -136,16 +136,26 @@
   "arrayLength": {
     "overloads": [
       {
-        "signature": "@must_use fn arrayLength ( p: ptr<storage, array<E>, AM> ) -> u32",
+        "signature": "@must_use fn arrayLength ( p: ptr<AS, array<E>, AM> ) -> u32",
         "parameterization": {
+          "AS": {
+            "types": [
+              "one",
+              "of",
+              "storage",
+              "uniform",
+              "workgroup",
+              "."
+            ]
+          },
           "E": {
-            "description": "is an element type for a runtime-sized array,"
+            "description": "is an element type for a runtime-sized array."
           },
           "access": {
-            "description": "mode AM is read or read_write"
+            "description": "mode AM is read or read_write and must be valid for AS."
           }
         },
-        "description": "Returns NRuntime, the number of elements in the runtime-sized array. See § 13.3.4 Buffer Binding Determines Runtime-Sized Array Element Count"
+        "description": "Returns NRuntime, the number of elements in the runtime-sized array. See § 13.3.4 Buffer Binding Determines Runtime-Sized Array Element Count When p is derived from a bufferView or bufferArrayView built-in function, NRuntime is based on the size of the buffer as determined by the analysis in § 17.14 Buffer View Built-in Functions."
       }
     ],
     "parameters": [],
@@ -527,6 +537,49 @@
           }
         },
         "description": "Construct a bool value. If T is bool, this is an identity operation. Otherwise this is a boolean coercion. The result is false if e is a zero value (or -0.0 for floating point types) and true otherwise."
+      }
+    ],
+    "parameters": [],
+    "description": null
+  },
+  "bufferArrayView": {
+    "overloads": [
+      {
+        "signature": "@must_use fn bufferArrayView<T> ( p: ptr<AS, buffer, AM>, offset: OI, size: SI ) -> ptr<AS, T, AM>",
+        "parameterization": {},
+        "description": "Reinterpret the memory view offset bytes from the start of p for size bytes as the type T. That is, if the memory locations associated with p are in the range [0, bufferLength(p) ), then the resulting memory locations associated with the result are in the range [ offset, offset + size ) with the store type T. If OI is i32, then: It is a shader-creation error if offset is a const-expression < 0. It is a pipeline-creation error if offset is an override-expression < 0. Otherwise, an indeterminate value for OI may be used. If SI is i32, then: It is a shader-creation error if size is a const-expression < 0. It is a pipeline-creation error if size is an override-expression < 0. Otherwise, an indeterminate value for SI may be used. An invalid memory reference is returned if MinTypeSize ( T ) > size. It is a shader-creation error if size is a const-expression (using 0 for offset if it is not). It is a pipeline-creation error if size is an override-expression (using 0 for offset if it is not). An invalid memory reference is returned if offset + size > bufferLength ( p ). If offset % RequiredAlignOf ( T, AS ) != 0, then: It is a shader-creation error if offset is a const-expression. It is a pipeline-creation error if offset is an override-expression. A value of offset & ~( RequiredAlignOf ( T, AS ) - 1) will be used for offset. Note: This interacts with the uniform_buffer_standard_layout language feature. If ( size - ArrayOffset ( T )) % StrideOf ( array<E> ) != 0, then: It is a shader-creation error if size is a const-expression. It is a pipeline-creation error if size is an override-expression. A value of roundDown ( StrideOf ( array<E> ), size - ArrayOffset ( T )) + ArrayOffset ( T ) will be used for size."
+      },
+      {
+        "signature": "@must_use fn bufferArrayView<T> ( p: ptr<AS, buffer<N>, AM>, offset: OI, size: SI ) -> ptr<AS, T, AM>",
+        "parameterization": {},
+        "description": "Reinterpret the memory view offset bytes from the start of p for size bytes as the type T. That is, if the memory locations associated with p are in the range [0, bufferLength(p) ), then the resulting memory locations associated with the result are in the range [ offset, offset + size ) with the store type T. If OI is i32, then: It is a shader-creation error if offset is a const-expression < 0. It is a pipeline-creation error if offset is an override-expression < 0. Otherwise, an indeterminate value for OI may be used. If SI is i32, then: It is a shader-creation error if size is a const-expression < 0. It is a pipeline-creation error if size is an override-expression < 0. Otherwise, an indeterminate value for SI may be used. An invalid memory reference is returned if MinTypeSize ( T ) > size. It is a shader-creation error if size is a const-expression (using 0 for offset if it is not). It is a pipeline-creation error if size is an override-expression (using 0 for offset if it is not). An invalid memory reference is returned if offset + size > N. It is a shader-creation error if either offset or size is a const-expression (using 0 if a parameter is not). It is a pipeline-creation error if either offset or size is an override-expression (using 0 if a parameter is not). If MinTypeSize ( T ) > N, then: It is a shader-creation error if N is a const-expression. It is a pipeline-creation error if N is an override-expression. If offset % RequiredAlignOf ( T, AS ) != 0, then: It is a shader-creation error if offset is a const-expression. It is a pipeline-creation error if offset is an override-expression. A value of offset & ~( RequiredAlignOf ( T, AS ) - 1) will be used for offset. Note: This interacts with the uniform_buffer_standard_layout language feature. If ( size - ArrayOffset ( T )) % StrideOf ( array<E> ) != 0, then: It is a shader-creation error if size is a const-expression. It is a pipeline-creation error if size is an override-expression. A value of roundDown ( StrideOf ( array<E> ), size - ArrayOffset ( T )) + ArrayOffset ( T ) will be used for size."
+      }
+    ],
+    "parameters": [],
+    "description": null
+  },
+  "bufferLength": {
+    "overloads": [
+      {
+        "signature": "@must_use fn bufferLength ( p: ptr<AS, buffer, AM> ) -> u32 @must_use fn bufferLength ( p: ptr<AS, buffer<N>, AM> ) -> u32",
+        "parameterization": {},
+        "description": "Returns the minimum size of the buffer pointed to by p encountered during the interprocedural analysis, or the size of the WebGPU GPUBuffer if only runtime-sized buffers were encountered."
+      }
+    ],
+    "parameters": [],
+    "description": null
+  },
+  "bufferView": {
+    "overloads": [
+      {
+        "signature": "@must_use fn bufferView<T> ( p: ptr<AS, buffer, AM>, offset: I ) -> ptr<AS, T, AM>",
+        "parameterization": {},
+        "description": "Reinterpret the memory view offset bytes from the start of p as the type T. That is, if the memory locations associated with p are in the range [0, bufferLength(p) ), then the resulting memory locations associated with the result are in the range [ offset, bufferLength(p) ) with the store type T. If I is i32, then: It is a shader-creation error if offset is a const-expression < 0. It is a pipeline-creation error if offset is an override-expression < 0. Otherwise, an indeterminate value for I may be used. An invalid pointer is returned if MinTypeSize ( T ) + offset > bufferLength ( p ). If offset % RequiredAlignOf ( T, AS ) != 0, then: It is a shader-creation error if offset is a const-expression. It is a pipeline-creation error if offset is an override-expression. A value of offset & ~( RequiredAlignOf ( T, AS ) - 1) will be used for offset. Note: This interacts with the uniform_buffer_standard_layout language feature."
+      },
+      {
+        "signature": "@must_use fn bufferView<T> ( p: ptr<AS, buffer<N>, AM>, offset: I ) -> ptr<AS, T, AM>",
+        "parameterization": {},
+        "description": "Reinterpret the memory view offset bytes from the start of p as the type T. That is, if the memory locations associated with p are in the range [0, bufferLength(p) ), then the resulting memory locations associated with the result are in the range [ offset, bufferLength(p) ) with the store type T. If I is i32, then: It is a shader-creation error if offset is a const-expression < 0. It is a pipeline-creation error if offset is an override-expression < 0. Otherwise, an indeterminate value for I may be used. An invalid memory reference is returned if MinTypeSize ( T ) + offset > N. It is a shader-creation error if MinTypeSize ( T ) > N. It is a shader-creation error if offset is a const-expression. It is a pipeline-creation error if offset is an override-expression. If offset % RequiredAlignOf ( T, AS ) != 0, then: It is a shader-creation error if offset is a const-expression. It is a pipeline-creation error if offset is an override-expression. A value of offset & ~( RequiredAlignOf ( T, AS ) - 1) will be used for offset. Note: This interacts with the uniform_buffer_standard_layout language feature."
       }
     ],
     "parameters": [],
