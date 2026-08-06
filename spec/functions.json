@@ -413,7 +413,7 @@
         "signature": "@const @must_use fn bitcast<T> ( e: T ) -> T",
         "parameterization": {
           "T": {
-            "description": "is a concrete numeric scalar or concrete numeric vector"
+            "description": "is concrete numeric scalar or concrete numeric vector"
           }
         },
         "description": "Identity transform. Component-wise when T is a vector. The result is e."
