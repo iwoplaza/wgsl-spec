@@ -950,7 +950,7 @@
             ]
           }
         },
-        "description": "Returns the partial derivative of e with respect to window x coordinates. Returns an indeterminate value if called in non-uniform control flow."
+        "description": "Returns the partial derivative of e with respect to window x coordinates. Let e i be the value of e provided by the invocation in the same quad as the current invocation, and which has quad invocation ID i. The result is: e 1 − e 0, if the current invocation’s quad ID is 0 or 1. e 3 − e 2, otherwise. Returns an indeterminate value if called in non-uniform control flow."
       }
     ],
     "parameters": [],
@@ -1004,7 +1004,7 @@
             ]
           }
         },
-        "description": "Returns the partial derivative of e with respect to window y coordinates. Returns an indeterminate value if called in non-uniform control flow."
+        "description": "Returns the partial derivative of e with respect to window y coordinates. Let e i be the value of e provided by the invocation in the same quad as the current invocation, and which has quad invocation ID i. The result is: e 2 − e 0, if the current invocation’s quad ID is 0 or 2. e 3 − e 1, otherwise. Returns an indeterminate value if called in non-uniform control flow."
       }
     ],
     "parameters": [],
